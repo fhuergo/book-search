@@ -22,7 +22,7 @@ class MainSearch extends Component {
     event.preventDefault()
     let slug = ""
     for (let key in this.state) {
-      if (this.state[key]) {
+      if (this.state[key] || this.state[key] === 0) {
         let excerpt = ""
         for (let i = 0; i < this.state[key].length; i++) {
           if (this.state[key][i] === " ") {
@@ -31,7 +31,11 @@ class MainSearch extends Component {
             excerpt += this.state[key][i]
           }
         }
-        slug += `?${key}=${excerpt}`
+        if (!slug) {
+          slug += `?${key}=${excerpt}`
+        } else {
+          slug += `&${key}=${excerpt}`
+        }
       }
     }
     if (slug) {
