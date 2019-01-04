@@ -1,20 +1,44 @@
 import React, { Component } from "react"
 import SearchForm from "./SearchForm"
-import { fetchBook } from "../store/book"
+import { fetchBooks } from "../store/books"
 import { connect } from "react-redux"
 
 class MainSearch extends Component {
   constructor() {
     super()
     this.state = {
-      input: ""
+      author: "",
+      title: "",
+      isbn: "",
+      subject: "",
+      place: "",
+      person: "",
+      publisher: ""
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
-  async handleSubmit(event) {
+  handleSubmit(event) {
     event.preventDefault()
-    await this.props.getBook(this.state.input)
+    let slug = ""
+    for (let key in this.state) {
+      if (this.state[key]) {
+        let excerpt = ""
+        for (let i = 0; i < this.state[key].length; i++) {
+          if (this.state[key][i] === " ") {
+            excerpt += "+"
+          } else {
+            excerpt += this.state[key][i]
+          }
+        }
+        slug += `?${key}=${excerpt}`
+      }
+    }
+    if (slug) {
+      this.props.getBooks(slug)
+    } else {
+      alert("Nothing was input.")
+    }
   }
   handleChange(event) {
     this.setState({
@@ -22,18 +46,33 @@ class MainSearch extends Component {
     })
   }
   render() {
+    const {
+      author,
+      title,
+      isbn,
+      subject,
+      place,
+      person,
+      publisher
+    } = this.state
     return (
       <SearchForm
         handleSubmit={this.handleSubmit}
         handleChange={this.handleChange}
-        input={this.state.input}
+        author={author}
+        title={title}
+        isbn={isbn}
+        subject={subject}
+        place={place}
+        person={person}
+        publisher={publisher}
       />
     )
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  getBook: isbn => dispatch(fetchBook(isbn))
+  getBooks: slug => dispatch(fetchBooks(slug))
 })
 
 export default connect(

@@ -8,10 +8,14 @@ const getBook = book => ({
 })
 
 export const fetchBook = isbn => async dispatch => {
-  const { data } = await axios.get(
-    `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`
-  )
-  dispatch(getBook(data))
+  try {
+    const { data } = await axios.get(
+      `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`
+    )
+    dispatch(getBook(data))
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 const initialState = {}
